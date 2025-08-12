@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "locale": "en_US",
+    "platform": "python-shiny",
+    "metadata": {},
+    "env": {
+        "SHINY_IDLE_TIMEOUT": "0"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "/Users/mtwatson/Desktop/Countess app",
+        "app_url": "https://mtwatson.shinyapps.io/countess_app/",
+        "app_id": 14882481,
+        "app_guid": null,
+        "title": "Countess app",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}
