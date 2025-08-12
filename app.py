@@ -21,17 +21,16 @@ app_ui = ui.page_fluid(
     ui.h2("Zinnia Image Phenotyping"),
     ui.tags.script(utils.fileIterator),
     ui.input_action_button("select_dir", "Select Directory", onclick="selectDirectory()"),
-    ui.br(),
-    ui.output_ui("image_display"),
-    ui.output_ui("phenotype_summary"),
+    ui.br(), ui.output_ui("image_display"), ui.br(),
+    ui.download_button("downloadResults", "Download Phenotypes CSV"),
+    ui.output_data_frame("phenotype_table"),
     ui.output_ui("completion_message"),
     ui.output_ui("processing_done"),  # Hidden output for JS signaling
-    ui.download_button("downloadResults", "Download Phenotypes CSV")
 )
 
 def server(input, output, session):
     # Reactive values for storing data
-    phenotypes = reactive.value(pd.DataFrame(columns=["image_name", "diameter", "meanColorR", "meanColorG", "meanColorB", "stemLength"]))
+    phenotypes = reactive.value(pd.DataFrame(columns=["imageName", "diameter", "meanColorR", "meanColorG", "meanColorB", "stemLength"]))
     processed_image = reactive.value(None)
     processing_done_counter = reactive.value(0)  # Counter for signaling
 
@@ -69,7 +68,7 @@ def server(input, output, session):
             except Exception as e:
                 print(f"Error processing image {input.current_image_name()}: {str(e)}")
                 img = cv2.resize(img, (0,0), fx=0.25, fy=0.25)
-                phenotypes_df = pd.DataFrame(columns=["image_name", "diameter", "meanColorR", "meanColorG", "meanColorB", "stemLength"])
+                phenotypes_df = pd.DataFrame(columns=["imageName", "diameter", "meanColorR", "meanColorG", "meanColorB", "stemLength"])
 
             with reactive.isolate():
                 if not phenotypes_df.empty:
@@ -102,23 +101,13 @@ def server(input, output, session):
         return ui.img(src=f"data:image/png;base64,{processed_image.get()}")
     
     @output
-    @render.ui
-    def phenotype_summary():
+    @render.data_frame
+    def phenotype_table():
         phenotypes_df = phenotypes.get()
         if phenotypes_df.empty:
-            return ui.p("No phenotypes detected yet. Process images to see results.")
+            return pd.DataFrame(columns=["imageName", "diameter", "meanColorR", "meanColorG", "meanColorB", "stemLength"])
         
-        total_phenotypes = len(phenotypes_df)
-        flower_count = len(phenotypes_df[phenotypes_df['diameter'].notna()])
-        stem_count = len(phenotypes_df[phenotypes_df['stemLength'].notna()])
-        
-        return ui.div(
-            ui.h4("Phenotype Summary"),
-            ui.p(f"Total phenotypes detected: {total_phenotypes}"),
-            ui.p(f"Flowers: {flower_count}"),
-            ui.p(f"Stems: {stem_count}"),
-            style="margin: 20px 0; padding: 15px; background-color: #e8f4f8; border-radius: 5px; border-left: 4px solid #2196F3;"
-        )
+        return phenotypes_df
 
     @output
     @render.ui
