@@ -419,7 +419,7 @@ def thresholdImage(image, scaling_factor = 2, color = [120, 50], adjustment = 0.
   thres = cv2.resize(thres, None, fx = scaling_factor, fy = scaling_factor)
   return thres
 
-def countImage(image, image_name=None):
+def countImage(image, imageName=None):
     phenotypes = pd.DataFrame(columns=['diameter', 'meanColorR', 'meanColorG', 'meanColorB', 'stemLength'])
     colorCardChipLengthCm = 1.81
     colorCardChipLengthPixels = getColorCardChipLength(image)
@@ -461,7 +461,7 @@ def countImage(image, image_name=None):
       image = cv2.drawContours(image, [stemContour], -1, (0,255,255), 20)
     
     # Add image name column to phenotypes dataframe if provided
-    if not phenotypes.empty and image_name is not None:
-        phenotypes.insert(0, 'image_name', image_name)
+    if not phenotypes.empty and imageName is not None:
+        phenotypes.insert(0, 'imageName', imageName)
     
     return image, phenotypes
