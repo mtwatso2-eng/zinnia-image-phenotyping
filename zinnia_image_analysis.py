@@ -444,10 +444,11 @@ def countImage(image, imageName=None):
                 # segmentation = cv2.resize(segmentation, (224,224))
                 confidence = classifyFlower(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB))
                 if confidence[flowerClassifierClassNames.index('flower')] > 0.4:
-                  flowerContours.append(contour)
                   flowerDiameter = np.max(rect[1]) * colorCardChipLengthCm / colorCardChipLengthPixels
-                  R, G, B = meanColor(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB), [0,0,0])
-                  phenotypes.loc[len(phenotypes.index)] = [flowerDiameter, R, G, B, None]
+                  if flowerDiameter < 12:
+                    flowerContours.append(contour)
+                    R, G, B = meanColor(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB), [0,0,0])
+                    phenotypes.loc[len(phenotypes.index)] = [flowerDiameter, R, G, B, None]
                 else:
                   confidence = classifyStem(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB))
                   if confidence[stemClassifierClassNames.index('stem')] > 0.4:
