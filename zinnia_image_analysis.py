@@ -452,9 +452,10 @@ def countImage(image, imageName=None):
                 else:
                   confidence = classifyStem(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB))
                   if confidence[stemClassifierClassNames.index('stem')] > 0.4:
-                      stemContours.append(contour)
-                      stemLenghth = (cv2.arcLength(contour, closed = True) / 2) * colorCardChipLengthCm / colorCardChipLengthPixels
-                      phenotypes.loc[len(phenotypes.index)] = [None, None, None, None, stemLenghth]
+                      stemLength = (cv2.arcLength(contour, closed = True) / 2) * colorCardChipLengthCm / colorCardChipLengthPixels     
+                      if stemLength < 40:
+                         stemContours.append(contour)
+                         phenotypes.loc[len(phenotypes.index)] = [None, None, None, None, stemLength]
 
     for flowerContour in flowerContours:
       image = cv2.drawContours(image, [flowerContour], -1, (0,255,0), 20)
