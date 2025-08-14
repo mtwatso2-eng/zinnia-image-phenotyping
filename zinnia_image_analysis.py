@@ -448,14 +448,14 @@ def countImage(image, imageName=None):
                   if flowerDiameter < 12:
                     flowerContours.append(contour)
                     R, G, B = meanColor(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB), [0,0,0])
-                    phenotypes.loc[len(phenotypes.index)] = [flowerDiameter, R, G, B, None]
+                    phenotypes.loc[len(phenotypes.index)] = [np.round(flowerDiameter, 2), R, G, B, None]
                 else:
                   confidence = classifyStem(cv2.cvtColor(segmentation, cv2.COLOR_BGR2RGB))
                   if confidence[stemClassifierClassNames.index('stem')] > 0.4:
                       stemLength = (cv2.arcLength(contour, closed = True) / 2) * colorCardChipLengthCm / colorCardChipLengthPixels     
                       if stemLength < 40:
                          stemContours.append(contour)
-                         phenotypes.loc[len(phenotypes.index)] = [None, None, None, None, stemLength]
+                         phenotypes.loc[len(phenotypes.index)] = [None, None, None, None, np.round(stemLength, 2)]
 
     for flowerContour in flowerContours:
       image = cv2.drawContours(image, [flowerContour], -1, (0,255,0), 20)
